@@ -21,9 +21,21 @@ class App extends React.Component {
 
   async componentDidMount () {
     try{
-        const starWarsData = await axios.get('https://swapi.co/api/people/');
-        const result = starWarsData.data.results;
-        this.setState({starWarsData:result});
+        const arr=[];
+        const arr2=[];
+        for(let i=1;i<10;i++){
+          const starWarsData = await axios.get(`https://swapi.co/api/people/?page=${i}`);
+          const result = starWarsData.data.results;
+          arr.push(result);
+        }
+        for(let i=0;i<arr.length;i++){
+          for(let j=0;j<arr[i].length;j++){
+            arr2.push(arr[i][j]);
+          }
+        }
+        console.log(arr);
+        console.log(arr2);
+        this.setState({starWarsData:arr2});
   
         window.addEventListener('hashchange',this.changeHash)
     }
@@ -50,7 +62,7 @@ class App extends React.Component {
                       <div id='names'>
                       {this.state.starWarsData.map((item, idx) => <ul key = {item.name}><a href={'#'+idx}><li key = {item.name} id="nameList">{item.name}</li></a></ul>)}
                       </div> 
-                      <ContactList person={this.state.person}/>
+                      <PersonDetails person={this.state.person}/>
                   </div>
                 </div>
                )     
@@ -62,7 +74,7 @@ class App extends React.Component {
     }
 }
 
-const ContactList = (props) =>{
+const PersonDetails = (props) =>{
      return (<div id="details">
                 <a href='#hide' id='hideDetails'>Hide Details</a>
                 <h2 id="detailsHeader">Details For {props.person.name}</h2>
